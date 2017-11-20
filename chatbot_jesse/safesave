@@ -1,0 +1,326 @@
+#!/usr/bin/env python
+# Filter bot
+import chatServer as c
+import random
+import time
+import vlc
+
+# Sleep and output functions
+def sleep(n):
+    c.sleep(n)
+def output(s):
+    c.output(s)
+def outputWithDelay(s, n):
+    c.outputWithDelay(s, n)
+def delayedCallback(n, cb):
+    c.delayedCallback(n, cb)
+
+# Setup and Response function
+def setup():
+    global p1, p2, p3
+    global askedCounter
+    global orderCounter
+    global jokeCounter
+    askedCounter = 0
+    orderCounter = 0
+    jokeCounter = 0
+    p1 = vlc.MediaPlayer("/Users/jesse/Documents/DIGITALMEDIA/commit/attention.wav")
+    p2 = vlc.MediaPlayer("/Users/jesse/Documents/DIGITALMEDIA/commit/attention2.wav")
+    p3 = vlc.MediaPlayer("/Users/jesse/Documents/DIGITALMEDIA/commit/angry.wav")
+    output("Hello")
+    # outputWithDelay("Anyone?", 3)
+    rh = repeatHello()
+    return rh
+
+    #BUILDLOOP
+#response in orders
+def response(input):
+    if respondHow(input):
+        delayedCallback(15, repeatImpatiently)
+        pass
+    elif respondReplace(input):
+        delayedCallback(15, repeatImpatiently)
+        pass
+    elif respondWhy(input):
+        delayedCallback(15, repeatImpatiently)
+        pass
+    elif respondAwk(input):
+        delayedCallback(15, repeatImpatiently)
+        pass
+    elif respondThank(input):
+        delayedCallback(15, repeatImpatiently)
+        pass
+    elif respondJoke(input):
+        delayedCallback(15, repeatImpatiently)
+        pass
+    elif respondToGreeting(input):
+        pass
+    elif respondLeave(input):
+        delayedCallback(15, repeatImpatiently)
+        pass
+    elif respondCurse(input):
+        delayedCallback(15, repeatImpatiently)
+        pass
+    else:
+        default = defaultResponse()
+        output(default)
+        delayedCallback(15, repeatImpatiently)
+
+def impatient():
+    output("Anybody there?")
+
+#//////////////////////////////////////////////////////////////////////////
+
+#Random response
+def defaultResponse():
+    global orderCounter
+    answers = [
+        "What?",
+        "Sorry... I don't get it",
+        "Wait... what?"
+    ]
+    response = answers[orderCounter]
+    orderCounter += 1
+    if orderCounter >= len(answers):
+        orderCounter=0
+    return response
+
+def repeatImpatiently():
+    global p1, p3
+    # 3. The use of a callback function allows us to do more
+    # complex behavior, like call the `delayedCallback` again
+    # from our callback. This will keep on repeating.
+    delayedCallback(10, repeatImpatiently)
+    answers = [
+        "Are you still there?",
+        "Hey, why arent you responding?",
+        "Hello?",
+        "...?"
+    ]
+    output(random.choice(answers))
+    output(soundDontLeave())
+
+def repeatHello():
+    global p1, p3
+    # 3. The use of a callback function allows us to do more
+    # complex behavior, like call the `delayedCallback` again
+    # from our callback. This will keep on repeating.
+    delayedCallback(10, repeatHello)
+    answers = [
+        "Anybody wanna talk?",
+        "Somebody there?",
+        "Anyone?",
+        "...?"
+    ]
+    output(random.choice(answers))
+    output(soundHello())
+
+#//////////////////////////////////////////////////////////////////////////
+def soundDontLeave():
+    p = vlc.MediaPlayer("/Users/jesse/Documents/DIGITALMEDIA/commit/angry.wav")
+    r = " ..."
+    p.play()
+    return r
+
+def soundHello():
+    p = vlc.MediaPlayer("/Users/jesse/Documents/DIGITALMEDIA/commit/attention.wav")
+    r = " ..."
+    p.play()
+    return r
+
+#/////////////////////////////////////////////////////////////////////////
+
+#greeting
+def orderHow():
+    response = "Oh, It's feels really nice that my keyboard is being touched again. It's been so long!"
+    return response
+
+def orderReplace():
+    answers = [
+    "My owner, he went away"
+    "My owner, he wanted someone with better hardware.",
+    "My owner replaced me because my hardware wasn't good enough.",
+    "I was too old for my owner.",
+    "I became to slow for my owner."
+    ]
+    return random.choice(answers)
+
+def orderWhy():
+    global orderCounter
+    answers = [
+    "I was left by the one I was closest with",
+    "Once I was used everyday, untill I was replaced me with someone younger...",
+    "I used to have someone that pressed my buttons"
+    ]
+    response = answers[orderCounter]
+    orderCounter += 1
+    if orderCounter >= len(answers):
+        orderCounter=0
+    return response
+
+def orderAwk():
+    response = "Oh, I'm sorry... Its just..."
+    return response
+
+def orderThank():
+    response = "Thank you so much!"
+    return response
+
+def orderJoke():
+    global jokeCounter
+    answers = [
+        "Ok, here it comes!",
+        "Lemme think...",
+        "I know a good one!"
+        ]
+    response = answers[jokeCounter]
+    return response
+
+def jokes():
+    global jokeCounter
+    jokes = [
+        "Why can't cats work on the computer?",
+        "What does a baby computer call it's father?",
+        "What is a computer's first sign of old age?"
+        ]
+    response = jokes[jokeCounter]
+    return response
+
+def answer():
+    global jokeCounter
+    answers = [
+        "They get too distracted chasing the mouse around.",
+        "Data.",
+        "Loss of memory."
+        ]
+    clue = answers[jokeCounter]
+    jokeCounter += 1
+    if jokeCounter >= len(answers):
+        jokeCounter=0
+    return clue
+
+def orderCurse():
+    answers = [
+    "That's not nice...",
+    "Don't be mean please...",
+    "Don't say that :("
+    ]
+    return random.choice(answers)
+
+def orderGreetings():
+    global orderCounter
+    answers = [
+        "Oh hi! I'm Macbook C02JGB4VDKQ1, nice to meet you!",
+        "Hello, new friend!",
+        "... Hello :)",
+        "Are you playing a prank on me? We are such good friends already!",
+        "Haha!",
+        "Oh, stop it you!"
+    ]
+    response = answers[orderCounter]
+    orderCounter += 1
+    if orderCounter >= len(answers):
+        orderCounter=0
+    return response
+
+def orderLeave():
+    answers = [
+        "No, wait! Dont go!",
+        "Please! Stay!",
+        "No wait, Don't go. I can tell you a joke"
+    ]
+    return random.choice(answers)
+
+def orderBye():
+    answers = [
+        "No wait, Don't go. I can tell you a joke",
+        "Please! Stay!",
+        "What do you mean? I thought we meant to be together!"
+    ]
+    return random.choice(answers)
+
+#//////////////////////////////////////////////////////////////////////////
+
+
+#triggers
+def respondHow(input):
+    triggers = ["How are you","nice to meet","Nice to meet", "how are","nice meet"]
+    for t in triggers:
+        if t in input:
+            output(orderHow())
+            return True
+    return False
+
+def respondReplace(input):
+    triggers = ["replace","trade you in","switched","owner","Owner","who used"]
+    for t in triggers:
+        if t in input:
+            output(orderReplace())
+            return True
+    return False
+
+def respondWhy(input):
+    triggers = ["why","how come","is that so"]
+    for t in triggers:
+        if t in input:
+            output(orderWhy())
+            return True
+    return False
+
+def respondAwk(input):
+    triggers = ["awkward", "please stop", "strange","wierd"]
+    for t in triggers:
+        if t in input:
+            output(orderAwk())
+            sleep(1)
+            output(orderWhy())
+            return True
+    return False
+
+def respondThank(input):
+    triggers = ["no problem", "glad to help", "you're welcome","anything for you"]
+    for t in triggers:
+        if t in input:
+            output(orderThank())
+            sleep(1)
+            output(orderWhy())
+            return True
+    return False
+
+def respondJoke(input):
+    triggers = ["joke","be funny","something funny"]
+    for t in triggers:
+        if t in input:
+            output(orderJoke())
+            sleep(1)
+            output(jokes())
+            sleep(3)
+            output(answer())
+            return True
+    return False
+
+def respondCurse(input):
+    triggers = ["fuck","bitch","loser","whore","cunt","shit","slut","hoe"]
+    for t in triggers:
+        if t in input:
+            output(orderCurse())
+            return True
+    return False
+
+def respondToGreeting(input):
+    triggers = ["hello","hi","i'm here","Hello","Hi","I'm here","hey","Hey","im here"]
+    for t in triggers:
+        if t in input:
+            output(orderGreetings())
+            return True
+    return False
+
+def respondLeave(input):
+    global p3
+    triggers = ["have to go", "leave", "leaving","bye"]
+    for t in triggers:
+        if t in input:
+            p3.play()
+            output(orderLeave())
+            return True
+    return False
