@@ -3,7 +3,7 @@
 # Unique bot
 
 import chatServer_snotbot as c
-import random
+import random, re
 from alle_reviews import reviews
 
 
@@ -20,6 +20,11 @@ def output(s):
 # Setup and Response function
 def setup():
     global alle_software
+
+    global level
+
+    level = 1
+
     alle_software = []
 
     for software in reviews:
@@ -77,8 +82,15 @@ def response(input):
     	pass
     elif respondTotutorials(input):
     	pass
+    elif AskInformation(input):
+        pass
+    elif VindPostcode(input):
+        pass
     else:
         output(defaultOrderedResponse())
+
+
+
 
 def defaultOrderedResponse():
     answers = [
@@ -95,7 +107,7 @@ def defaultOrderedResponse():
 
 
 def respondToTypo(input):
-    triggers = [' type ', ' font ', ' glyph ', ' google ', ' google fonts ', ' italic ', ' bold ', ' regular', ' words', ' calligraphy ', ' writing ', ' typeface ']
+    triggers = ['type', ' font ', ' glyph ', ' google ', ' google fonts ', ' italic ', ' bold ', ' regular', ' words', ' calligraphy ', ' writing ', 'typeface', ' typography ']
     for t in triggers:
         if t in input:
             answer = 'yes '+t+' is nice, what would you like to do with it?'
@@ -104,14 +116,24 @@ def respondToTypo(input):
     return False
 
 def respondToSoftwarenames(input):
+    global level
+    print(level)
     triggers = alle_software
     for t in triggers:
         if t.lower() in input.lower():
-            answer = 'ah yes, '+t+' i know something about that. Would you like to read it, yes/no?'
-            sleep(1)
-            answer = 'Review'
-            output(answer)
-            return True
+            if level == 1:
+                answer = 'ah yes, '+t+' i know something about that. Would you like to read it, yes/no?'
+                # sleep(1)
+                # answer = 'Review'
+                output(answer)
+                level = 2
+                return True
+            elif level == 2:
+                answer = 'wil je een print van '+t
+                output(answer)
+                level =3
+                return True
+
     return False
 
 def respondTo3d(input):
@@ -197,7 +219,7 @@ def respondTotutorials(input):
 
 def randomfree():
     answers = [
-        "Are you interested in a free tool?", 
+        "Are you interested in a free tool?",
 		"I have different free tools. What category do you prefer?",
 		"What kind of tool are you searching for?",
 		"Maybe you can give me keywords, then I can investigate what your interest is."
@@ -337,7 +359,7 @@ def randomprice():
     return random.choice(answers)
 
 def respondToprice(input):
-    triggers = ['price', 'cost', 'just student']
+    triggers = ['price', 'cost', 'just student', 'free']
     for t in triggers:
         if t in input:
             output(randomprice())
@@ -377,3 +399,24 @@ def respondTopreceive(input):
             output(randomreceive())
             return True
     return False
+
+def AskInformation(input):
+    triggers = ['done', 'finish', 'thank', 'you', 'thank you', 'print', 'printed', 'book', 'send', 'booklet', 'paper', 'address', 'postal', 'code', 'country', 'version']
+    for t in triggers:
+        if t in input:
+            output('Ik stuur je er wel een, wat is je postcode?')
+
+def VindPostcode(input):
+    postcode_reg_spatie = re.compile(r'\b[0-9]{4} [aA-zZ]{2}')
+    postcode_reg = re.compile(r'\b[0-9]{4}[aA-zZ]{2}')
+
+    if postcode_reg.search(input) or postcode_reg_spatie.search(input):
+        postal_code = input
+        file = open("postcode.txt", "a")
+        file.write(postal_code)
+        file.close()
+        return True
+    return False
+            # name = input("What is your full name?")
+            # file = open("name.txt", "w")
+            # file.write(name)
